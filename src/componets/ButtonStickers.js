@@ -15,7 +15,7 @@ export function ButtonStickers(props) {
         styleSheet={{
           borderRadius: '10px',
           padding: '0 3px 0 0',
-          minWidth: '50px',
+          minWidth: '45px',
           minHeight: '90%',
           fontSize: '20px',
           marginBottom: '8px',
