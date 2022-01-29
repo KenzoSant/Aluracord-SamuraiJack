@@ -164,6 +164,9 @@ export default function PaginaInicial() {
             mainColorLight: appConfig.theme.colors.primary[400],
             mainColorStrong: appConfig.theme.colors.primary[950],
           }}
+          styleSheet={{
+            transition: "0.5s",
+          }}
         />    
 
         </Box>

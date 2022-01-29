@@ -23,6 +23,7 @@ export default function ChatPage() {
 
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+    const [carregando, setCarregando] = React.useState(true);
     const roteamento = useRouter();
     const user = roteamento.query.username;
 
@@ -34,6 +35,7 @@ export default function ChatPage() {
             .then(({ data }) => {
                 console.log('Dados da consulta:', data);
                 setListaDeMensagens(data);
+                setCarregando(false)
             });
 
         tempoMensagens((novaMensagem) => {
@@ -140,7 +142,7 @@ export default function ChatPage() {
             }}
         >
 
-        <MessageList mensagens={listaDeMensagens} onDelete={handleDeleteMessage}/>
+        <MessageList mensagens={listaDeMensagens} onDelete={handleDeleteMessage} carregando={carregando}/>
 
         <Box
             as="form"
@@ -239,6 +241,10 @@ function Header() {
                 </Text>
 
                 <Button
+
+                    styleSheet={{
+                        transition: "0.5s",
+                    }}
                     variant='tertiary'
                     colorVariant='light'
                     label='Logout'
@@ -266,6 +272,30 @@ function MessageList(props) {
                 
             }}
         >
+
+        {props.carregando && (
+
+            <Box
+                styleSheet={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)'
+                }}
+            >
+                    
+                <Text 
+                    tag="strong"
+                    styleSheet={{ 
+                        color: appConfig.theme.colors.neutrals[100], 
+                        fontSize: '20xp',
+                    }}
+                    >
+                    Carregando mensagens...                   
+                </Text>
+
+            </Box>
+        )} 
 
         {props.mensagens.map((mensagem) => {
                 
@@ -336,7 +366,7 @@ function MessageList(props) {
                         }}
                         title={`Apagar mensagem`}
                         styleSheet={{
-                            backgroundColor: appConfig.theme.colors.primary[400],
+                            backgroundColor: appConfig.theme.colors.neutrals[800],
                             borderRadius: "5px",
                             color: appConfig.theme.colors.neutrals[100],
                             paddingHorizontal:'4px',
@@ -345,7 +375,7 @@ function MessageList(props) {
                             transition: "0.5s",
                             cursor: 'pointer',
                             hover: {
-                                backgroundColor: appConfig.theme.colors.primary[950],
+                                backgroundColor: appConfig.theme.colors.neutrals[500],
                             },
                         }}
                     >

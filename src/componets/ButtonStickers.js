@@ -23,6 +23,7 @@ export function ButtonStickers(props) {
           lineHeight: '0',
           display: 'flex',
           alignItems: 'center',
+          transition: "0.5s",
           justifyContent: 'center',
           backgroundColor: appConfig.theme.colors.neutrals[800],
           hover: {
@@ -86,6 +87,7 @@ export function ButtonStickers(props) {
                   width: '50%',
                   borderRadius: '5px',
                   padding: '10px',
+                  transition: "0.5s",
                   focus: {
                     backgroundColor: appConfig.theme.colors.neutrals[600],
                   },
