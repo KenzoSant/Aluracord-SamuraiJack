@@ -1,36 +1,7 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
 import appConfig from '../config.json';
+import { useRouter } from 'next/router';
 import React from 'react';
-
-
-function GlobalStyle() {
-  return (
-    <style global jsx>{`
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        list-style: none;
-      }
-      body {
-        font-family: 'Open Sans', sans-serif;
-      }
-      /* App fit Height */ 
-      html, body, #__next {
-        min-height: 100vh;
-        display: flex;
-        flex: 1;
-      }
-      #__next {
-        flex: 1;
-      }
-      #__next > * {
-        flex: 1;
-      }
-      /* ./App fit Height */ 
-    `}</style>
-  );
-}
 
 
 function Titulo(props) {
@@ -62,16 +33,29 @@ function Titulo(props) {
 // }
 // export default HomePage
 
+const gitHubRequest = async (username) => {
+  try {
+    const res = await fetch(`https://api.github.com/users/${username}`);
+    const userInfos = await res.json();
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
 export default function PaginaInicial() { 
-  const username = 'KenzoSant';
+  //const [username, setUsername] = React.useState('KenzoSant');
+  const [username, setUsername] = React.useState("");
+  const [displayInfos, setDisplayInfos] = React.useState("none");
+  const [userIsInvalid, setuserIsInvalid] = React.useState("true");
+  const [showUserImage, setUserImage] = React.useState("https://openclipart.org/download/247319/abstract-user-flat-3.svg"); 
+  const roteamento = useRouter();
   
   return (
     <>
-      <GlobalStyle/>
 
         <Box
-            styleSheet={{
+          styleSheet={{
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
@@ -80,7 +64,7 @@ export default function PaginaInicial() {
             backgroundRepeat: 'no-repeat', 
             backgroundSize: 'cover',
             backgroundBlendMode: 'multiply',
-            }}
+          }}
         >
 
         <Box
@@ -106,16 +90,22 @@ export default function PaginaInicial() {
 
         {/* Formulário */}
         <Box
-            as="form"
-            styleSheet={{
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              width: { xs: '100%', sm: '50%' }, 
-              textAlign: 'center', 
+          as="form"
+          onSubmit={function (InfosEvent){
+            InfosEvent.preventDefault()
+            !userIsInvalid
+                ? (roteamento.push(`/chat?username=${username}`))
+                : setUserFound("");
+          }}
+          styleSheet={{
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            width: { xs: '100%', sm: '50%' }, 
+            textAlign: 'center', 
               marginBottom: '32px',
-            }}
+          }}
         >
 
         <Titulo tag="h2">Boas vindas de volta!</Titulo>
@@ -124,36 +114,63 @@ export default function PaginaInicial() {
               {appConfig.name}
         </Text>
 
+         {/* <input
+          type="text"
+          value={username}
+          onChange={function (){
+            console.log('user',event.target.value);    
+            // Onde esta o valor? (NickName)
+            const valor = event.target.value
+            // Trocar valor
+            setUsername(valor)
+          }}
+        />   */}
+
         <TextField
-            required 
-            fullWidth
-            textFieldColors={{
-              neutral:{
-                textColor: appConfig.theme.colors.neutrals[200],
-                mainColor: appConfig.theme.colors.primary[400],
-                mainColorHighlight: appConfig.theme.colors.primary[950],
-                backgroundColor: appConfig.theme.colors.neutrals[800],
-              },
-            }}
-        />
+          required 
+          fullWidth
+          value={username}
+          onChange={function (){    
+            // Onde esta o valor? (NickName)
+            const valor = event.target.value
+            // Trocar valor
+            valor.length >= 2
+                  ? (setUserImage(`https://github.com/${valor}.png`),
+                    setDisplayInfos(""),
+                    setuserIsInvalid(""))
+                  : (setUserImage("https://openclipart.org/download/247319/abstract-user-flat-3.svg"),
+                    setDisplayInfos("none"),
+                    setuserIsInvalid("true"));
+                setUsername(valor);
+          }}
+          textFieldColors={{
+            neutral:{
+              textColor: appConfig.theme.colors.neutrals[200],
+              mainColor: appConfig.theme.colors.primary[400],
+              mainColorHighlight: appConfig.theme.colors.primary[950],
+              backgroundColor: appConfig.theme.colors.neutrals[800],
+            }
+          }}
+        /> 
 
         <Button
-            type='submit'
-            label='Entrar'
-            fullWidth
-            buttonColors={{
+          type='submit'
+          label='Entrar'
+          disabled= {`${userIsInvalid}`}
+          fullWidth
+          buttonColors={{
             contrastColor: appConfig.theme.colors.neutrals["000"],
             mainColor: appConfig.theme.colors.primary[400], 
             mainColorLight: appConfig.theme.colors.primary[400],
             mainColorStrong: appConfig.theme.colors.primary[950],
-            }}
+          }}
         />    
 
         </Box>
           {/* Formulário */}
 
-
           {/* Photo Area */}
+
             <Box
               styleSheet={{
                 display: 'flex',
@@ -169,13 +186,15 @@ export default function PaginaInicial() {
                 minHeight: '240px',
               }}
             >
+
             <Image
               styleSheet={{
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
-              src={`https://github.com/${username}.png`}
+              src={`${showUserImage}`}
             />
+
             <Text
               variant="body4"
               styleSheet={{
@@ -184,9 +203,8 @@ export default function PaginaInicial() {
                 padding: '3px 10px',
                 borderRadius: '1000px'
               }}
-            >
-                {`${username}`}
-
+            > 
+              {username.length < 3 ? `User not found` : username}
             </Text>
 
             </Box>
