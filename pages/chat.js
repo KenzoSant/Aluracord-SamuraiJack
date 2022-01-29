@@ -119,7 +119,7 @@ export default function ChatPage() {
                 border: '1px solid',
                 borderColor: appConfig.theme.colors.primary[600],
                 height: '100%',
-                maxWidth: '70%',
+                maxWidth: '80%',
                 maxHeight: '95vh',
                 padding: '32px',
             }}
